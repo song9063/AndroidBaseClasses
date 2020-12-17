@@ -1,0 +1,3 @@
+include ':AndroidBaseClasses'
+include ':app'
+rootProject.name = "AndroidBaseClassesDemo"
