@@ -1,10 +1,13 @@
 package com.github.song9063.androidbaseclasses.http
 
 import android.content.Context
+import android.graphics.Bitmap
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 
 class BoltHttp(context: Context) {
     private val mContext = context
@@ -59,6 +62,36 @@ class BoltHttp(context: Context) {
             }
         }
         BoltVolleyQueue.getInstance(mContext).addToRequestQueue(jsonObjReq)
+    }
+
+    fun awsS3PutImage(strUrl: String, bitmap: Bitmap,
+                      strFileExtension: String = "jpg",
+                      onResp: (String, String, Boolean, Int) -> (Boolean),
+                      onError: (String, String, Int) -> (Boolean), nCustomTag: Int){
+        val req = object : StringRequest(
+            Request.Method.PUT, strUrl,
+            Response.Listener<String> { resp ->
+                onResp(strUrl, resp, resp.isNotEmpty(), nCustomTag)
+            },
+            Response.ErrorListener { error ->
+                onError(strUrl, error.toString(), nCustomTag)
+            }
+        ){
+            override fun getBody(): ByteArray {
+                return bitmap.toByteArray()
+            }
+            override fun getHeaders(): MutableMap<String, String> {
+                val s3Headers = HashMap<String,String>()
+                s3Headers.put("Content-Type", "image/jpg")
+                return s3Headers
+            }
+        }
+    }
+    fun Bitmap.toByteArray():ByteArray{
+        ByteArrayOutputStream().apply {
+            compress(Bitmap.CompressFormat.JPEG,100,this)
+            return toByteArray()
+        }
     }
 
 }
