@@ -86,6 +86,7 @@ class BoltHttp(context: Context) {
                 return s3Headers
             }
         }
+        BoltVolleyQueue.getInstance(mContext).addToRequestQueue(req)
     }
     fun Bitmap.toByteArray():ByteArray{
         ByteArrayOutputStream().apply {
