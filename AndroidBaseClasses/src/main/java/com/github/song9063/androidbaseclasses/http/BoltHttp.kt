@@ -82,7 +82,7 @@ class BoltHttp(context: Context) {
             }
             override fun getHeaders(): MutableMap<String, String> {
                 val s3Headers = HashMap<String,String>()
-                s3Headers.put("Content-Type", "image/jpg")
+                s3Headers.put("Content-Type", "image/${strFileExtension}")
                 return s3Headers
             }
         }
